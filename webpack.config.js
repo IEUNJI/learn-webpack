@@ -7,8 +7,8 @@ const TerserWebpackPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  // mode: 'development',
-  mode: 'production',
+  mode: 'development',
+  // mode: 'production',
   optimization: { // 放优化的内容
     minimizer: [
       new TerserWebpackPlugin({
@@ -20,13 +20,18 @@ module.exports = {
   },
   entry: {
     index: './src/index.js',
-    login: './src/login.js'
+    // login: './src/login.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash:8].js', // hash指的是每次构建时产生的哈希值
     publicPath: '/', // 会拼接在模块路径的前面。默认是空字符串，即相对路径
   },
+  devtool: 'source-map', // 最完美的映射，但是每次编译不能缓存，需要重新生成，所以只适用于生产 //# sourceMappingURL=index.0afd008e.js.map
+  // devtool: 'cheap-module-source-map', // 在source-map基础上，去掉了列信息，但还是源码
+  // devtool: 'eval', // 最好的性能，可以缓存，但是只能映射到每个模块`编译后`的代码 //# sourceURL=webpack:///./src/index.js?
+  // devtool: 'none', // 调试时看不到源代码
+  // sourceMap文件对映规则，VLQ编码：http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html
   devServer: {
     port: 8080,
     compress: true, // gzip压缩等
@@ -35,14 +40,27 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.js$/,
+        use: 'babel-loader?cacheDirectory',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.(css|less)$/,
         // css-loader 处理css文件中的url路径（是借助file-loader处理的）
         // style-loader 将样式内容作为style标签插入到html head中
         // use: ['style-loader', 'css-loader'],
-        use: [MiniCssExtractPlugin.loader, 'css-loader'], // 抽取css，同时需要配置插件，指定文件名
+        // 抽取css，同时需要配置插件，指定文件名
+        use: [
+          MiniCssExtractPlugin.loader,
+          // 需要在每个loader都配置sourceMap才生效
+          // 当然，如果devtools为none，这里也不会生成sourceMap文件了
+          { loader: 'css-loader', options: { sourceMap: true } },
+          { loader: 'postcss-loader', options: { sourceMap: true } },
+          { loader: 'less-loader', options: { sourceMap: true } },
+        ],
       },
       {
-        test: /\.(jpg|png|gif|jpeg|svg)$/,
+        test: /\.(jpg|png|gif|jpeg|webp|svg|eot|ttf|woff|woff2)$/,
         // url-loader 是对file-loader的增强（基于file-loader），可以转换文件为base64
         // 写url-loader就不用写file-loader了
         use: {
@@ -61,6 +79,7 @@ module.exports = {
       },
       {
         test: /\.(html|htm)$/,
+        // 处理html模板中使用相对路径引入资源的问题
         use: 'html-withimg-loader'
       }
     ]
@@ -71,8 +90,8 @@ module.exports = {
       filename: 'index.html',
       // 这个hash是在文件名后面加上查询字符串
       hash: true, // <script src="index.cd10f204.bundle.js?cd10f2049f1e19ddd144"></script>
-      chunks: ['login', 'index'], // 指定引入html中的入口文件
-      chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
+      // chunks: ['login', 'index'], // 指定引入html中的入口文件
+      // chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
     }),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
