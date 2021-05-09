@@ -5,6 +5,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require('webpack');
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -37,6 +40,14 @@ module.exports = {
     compress: true, // gzip压缩等
     contentBase: path.resolve(__dirname, 'dist'), // 将dist目录作为服务目录
   },
+  // 如果想要某些包用cdn引入，但是在使用的时候还是import导入，使用 externals
+  // 左边是依赖包名，右边是全局变量
+  // 但是这样还需要手动配置cdn，为了更进一步，可以使用这个HtmlWebpackExternalsPlugin插件
+  // externals: {
+  //   'jquery': 'jQuery',
+  //   'lodash': '_',
+  //   'react': 'React'
+  // },
   module: {
     rules: [
       {
@@ -85,6 +96,14 @@ module.exports = {
     ]
   },
   plugins: [
+    // 不是挂载到window上，而是在每个模块前导入这些依赖
+    // 当然是按需引入，模块没用到则不会引
+    // new webpack.ProvidePlugin({
+    //   _: 'lodash',
+    //   $: 'jquery',
+    //   React: 'react'
+    // }),
+    new webpack.BannerPlugin('ieunji'), // 在打包后的js文件顶部加一个注释
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
@@ -98,6 +117,39 @@ module.exports = {
       // 为css指定文件夹
       filename: 'css/[name].[contenthash:8].css', // name是chunk的名字
       // chunkFilename: '[id].css', // 在异步加载时使用id
+    }),
+    // new CopyWebpackPlugin({
+    //   patterns: [
+    //     {
+    //       from: path.resolve(__dirname, 'src/images'),
+    //       to: 'images'
+    //     }
+    //   ]
+    // }),
+    new HtmlWebpackExternalsPlugin({
+      hash: true, // script标签缓存破坏
+      externals: [
+        {
+          module: 'jquery',
+          // entry: 'https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js',
+          // 除了cdn方式，还可以写一个该模块在node_modules中的路径，会自动拷贝到
+          // /vendor/jquery/dist/jquery.js，然后创建cdn引入
+          entry: 'dist/jquery.js',
+          global: 'jQuery',
+        },
+        {
+          module: 'lodash',
+          // entry: 'https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.js',
+          entry: 'lodash.js',
+          global: '_',
+        },
+        {
+          module: 'react',
+          // entry: 'https://cdn.bootcdn.net/ajax/libs/react/17.0.2/umd/react.development.js',
+          entry: 'umd/react.development.js',
+          global: 'React',
+        },
+      ]
     }),
   ]
 };
