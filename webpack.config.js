@@ -10,13 +10,14 @@ const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const PurgecssWebpackPlugin = require('purgecss-webpack-plugin');
+const glob = require('glob');
 const smp = new SpeedMeasureWebpackPlugin({
   disable: false
 });
 
 module.exports = (env, args) => {
   const isDev = env === 'development';
-  console.log(env, isDev);
 
   return smp.wrap({
     // mode会自动向前端文件定义process.env.NODE_ENV变量（DefinePlugin）
@@ -31,7 +32,7 @@ module.exports = (env, args) => {
         new OptimizeCSSAssetsWebpackPlugin()
       ]
     },
-    stats: 'normal',
+    // stats: 'normal',
     entry: {
       index: './src/index.js',
       login: './src/login.js'
@@ -173,6 +174,11 @@ module.exports = (env, args) => {
         // 为css指定文件夹
         filename: 'css/[name].[contenthash:8].css', // name是chunk的名字
         // chunkFilename: '[id].css', // 在异步加载时使用id
+      }),
+      // 不止扫描css文件，还扫描js文件，对于类名出现过的，则不清理，即使类名和变量名同名了，也不清理
+      // 为了安全
+      new PurgecssWebpackPlugin({
+        paths: glob.sync(`${path.resolve(__dirname, 'src')}/**/*`, { nodir: true })
       }),
       // new CopyWebpackPlugin({
       //   patterns: [
