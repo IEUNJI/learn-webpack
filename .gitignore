@@ -13,6 +13,7 @@ package-lock.json
 /build
 /dist
 /babel-dist
+/lib-dist
 
 # misc
 .DS_Store

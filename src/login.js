@@ -1,3 +1,6 @@
+import React from 'react';
+import $ from 'jquery';
+
 console.log('login.js');
 
 /**
