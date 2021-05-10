@@ -30,6 +30,23 @@ module.exports = {
     filename: '[name].[contenthash:8].js', // hash指的是每次构建时产生的哈希值
     publicPath: '/', // 会拼接在模块路径的前面。默认是空字符串，即相对路径
   },
+  // 定制了一些查找文件的规则
+  resolve: {
+    // 省略拓展名
+    extensions: ['.js', '.jsx', '.json'],
+    // 别名
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    },
+    // 可以额外增加依赖目录
+    modules: [path.resolve(__dirname, 'my-modules'), 'node_modules']
+  },
+  // 自定义loader的查找规则时使用
+  // resolveLoader: {
+  //   modules: ['node_modules'],
+  //   extensions: ['.js', '.json'],
+  //   mainFields: ['loader', 'main'],
+  // },
   devtool: 'source-map', // 最完美的映射，但是每次编译不能缓存，需要重新生成，所以只适用于生产 //# sourceMappingURL=index.0afd008e.js.map
   // devtool: 'cheap-module-source-map', // 在source-map基础上，去掉了列信息，但还是源码
   // devtool: 'eval', // 最好的性能，可以缓存，但是只能映射到每个模块`编译后`的代码 //# sourceURL=webpack:///./src/index.js?
@@ -69,6 +86,7 @@ module.exports = {
   //   'react': 'React'
   // },
   module: {
+    // noParse: /jquery/,
     rules: [
       {
         test: /\.js$/,
@@ -170,6 +188,15 @@ module.exports = {
           global: 'React',
         },
       ]
+    }),
+    // 为什么要JSON.stringify ？
+    // 因为在前端页面的值都经过了JSON.parse
+    // 这些变了并不存在于运行时，而是在编译阶段就被替换成值了
+    new webpack.DefinePlugin({
+      version: JSON.stringify('1.0'),
+      isDev: JSON.stringify(true),
+      num: JSON.stringify(2),
+      jsonName: JSON.stringify('2.0')
     }),
   ]
 };
