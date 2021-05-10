@@ -1,7 +1,3 @@
-import _ from 'lodash';
-import $ from 'jquery';
-import React from 'react';
-
-console.log(_.join(['a', 'b', 'c'], '@'));
-console.log(<h1 />);
-console.log($);
+fetch('/api/users').then(res => res.json()).then(res => {
+  console.log(res);
+});

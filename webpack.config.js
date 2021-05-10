@@ -39,6 +39,26 @@ module.exports = {
     port: 8080,
     compress: true, // gzip压缩等
     contentBase: path.resolve(__dirname, 'dist'), // 将dist目录作为服务目录
+    // 有后端服务器（不支持跨域），需要proxy代理
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:3456',
+    //     // 路径重写 以/api开头的请求走代理，且重写路径，将/api去掉，因为后端接口没有/api
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // }
+    // 没后端服务器，需要前端自己mock数据
+    // webpack-dev-server内部就是express服务器
+    // before(app) {
+    //   app.get('/api/users', (req, res) => {
+    //     console.log('收到请求');
+    //     res.json([
+    //       { id: 0, name: 'webpack' }
+    //     ]);
+    //   })
+    // }
   },
   // 如果想要某些包用cdn引入，但是在使用的时候还是import导入，使用 externals
   // 左边是依赖包名，右边是全局变量
