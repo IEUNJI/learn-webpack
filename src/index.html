@@ -10,9 +10,21 @@
 
 <body>
   <div id="root"></div>
-  <div class="less-container">less</div>
   <!-- 通过检测请求头判断浏览器，引入对应的polyfill -->
   <!-- <script src="https://polyfill.io/v3/polyfill.js"></script> -->
+  <script>
+    //  * 对于pc端，字体一般为12 14 16 18px
+    //  * 对于移动端，如果设计稿为375px，那么字体也是和pc端一致
+    //  * 如果设计稿为750px，那么字体大小需要翻倍，才能获得和pc端一样的显示效果
+    //  * 那么750px的设计稿的字体大小需要24 28 32 36px
+    // 根字体为px
+    // 性能不高，可以直接设置10vw
+    // function setRemUnit() {
+    //   document.documentElement.style.fontSize = document.documentElement.clientWidth / 10 + 'px';
+    // }
+    // window.addEventListener('resize', setRemUnit);
+    // setRemUnit();
+  </script>
 </body>
 
 </html>

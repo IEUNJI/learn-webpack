@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --env=production",
     "build:dev": "webpack --env=development",
+    "build:dll": "webpack --config webpack.config.dll.js",
     "dev": "webpack-dev-server --env=development --open",
     "analyz": "webpack-bundle-analyzer --port 8888 ./dist/stats.json",
     "babel": "babel src --out-dir babel-dist",
@@ -48,6 +49,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.4",
     "postcss-loader": "^3.0.0",
     "purgecss-webpack-plugin": "^4.0.3",
+    "px2rem-loader": "^0.1.9",
     "speed-measure-webpack-plugin": "^1.5.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^3.1.0",
@@ -61,6 +63,7 @@
   "dependencies": {
     "@babel/runtime": "^7.14.0",
     "@babel/runtime-corejs3": "^7.14.0",
+    "amfe-flexible": "^2.2.1",
     "core-js": "^3.12.1",
     "jquery": "^3.6.0",
     "lodash": "^4.17.21",

@@ -1,5 +1,9 @@
-@import url(./less.less);
+body {
+  margin: 0;
+}
 
 #root {
-  background: url('./images/logo.jpg');
+  width: 375px;
+  height: 375px;
+  background: wheat;
 }

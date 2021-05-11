@@ -9,14 +9,16 @@ const webpack = require('webpack');
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const PurgecssWebpackPlugin = require('purgecss-webpack-plugin');
+const DllReferencePlugin = require('webpack/lib/DllReferencePlugin');
+
 const glob = require('glob');
 const smp = new SpeedMeasureWebpackPlugin({
   disable: false
 });
 
-module.exports = (env, args) => {
+module.exports = env => {
   const isDev = env === 'development';
 
   return smp.wrap({
@@ -124,6 +126,7 @@ module.exports = (env, args) => {
             { loader: 'css-loader', options: { sourceMap: true } },
             { loader: 'postcss-loader', options: { sourceMap: true } },
             { loader: 'less-loader', options: { sourceMap: true } },
+            // { loader: 'px2rem-loader', options: { remUnit: 75, remPrecesion: 8 } },
           ],
         },
         {
@@ -175,6 +178,12 @@ module.exports = (env, args) => {
       //   chunks: ['login'], // 指定引入html中的入口文件
       //   chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
       // }),
+      // new DllReferencePlugin({
+      //   manifest: path.resolve(__dirname, 'dll-dist', 'react.manifest.json')
+      // }),
+      // new DllReferencePlugin({
+      //   manifest: path.resolve(__dirname, 'dll-dist', 'utils.manifest.json')
+      // }),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         // 为css指定文件夹
@@ -183,9 +192,10 @@ module.exports = (env, args) => {
       }),
       // 不止扫描css文件，还扫描js文件，对于类名出现过的，则不清理，即使类名和变量名同名了，也不清理
       // 为了安全
-      new PurgecssWebpackPlugin({
-        paths: glob.sync(`${path.resolve(__dirname, 'src')}/**/*`, { nodir: true })
-      }),
+      // 这个会使css的sourceMap失效，所以不用了
+      // new PurgecssWebpackPlugin({
+      //   paths: glob.sync(`${path.resolve(__dirname, 'src')}/**/*`, { nodir: true })
+      // }),
       // new CopyWebpackPlugin({
       //   patterns: [
       //     {
