@@ -30,16 +30,22 @@ module.exports = (env, args) => {
           cache: true, // 开启缓存
         }),
         new OptimizeCSSAssetsWebpackPlugin()
-      ]
+      ],
+      // https://segmentfault.com/a/1190000013476837
+      // 默认配置即可，all代表异步加载和初始化的都进行抽离
+      splitChunks: {
+        chunks: 'all',
+      }
     },
     // stats: 'normal',
     entry: {
       index: './src/index.js',
-      login: './src/login.js'
+      // login: './src/login.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name].[contenthash:8].js', // hash指的是每次构建时产生的哈希值
+      chunkFilename: '[name].[contenthash:8].js',
       publicPath: '/', // 会拼接在模块路径的前面。默认是空字符串，即相对路径
     },
     // 定制了一些查找文件的规则
@@ -159,16 +165,16 @@ module.exports = (env, args) => {
         filename: 'index.html',
         // 这个hash是在文件名后面加上查询字符串
         hash: true, // <script src="index.cd10f204.bundle.js?cd10f2049f1e19ddd144"></script>
-        chunks: ['index'], // 指定引入html中的入口文件
-        chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
+        // chunks: ['index'], // 指定引入html中的入口文件
+        // chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
       }),
-      new HtmlWebpackPlugin({
-        template: './src/login.html',
-        filename: 'login.html',
-        hash: true,
-        chunks: ['login'], // 指定引入html中的入口文件
-        chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
-      }),
+      // new HtmlWebpackPlugin({
+      //   template: './src/login.html',
+      //   filename: 'login.html',
+      //   hash: true,
+      //   chunks: ['login'], // 指定引入html中的入口文件
+      //   chunksSortMode: 'manual', // 手动排序，对引入的代码块进行排序
+      // }),
       new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({
         // 为css指定文件夹
