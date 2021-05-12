@@ -47,7 +47,7 @@ module.exports = env => {
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].[hash:8].js', // hash指的是每次构建时产生的哈希值
+      filename: '[name].[contenthash:8].js', // hash指的是每次构建时产生的哈希值
       chunkFilename: '[name].[contenthash:8].js',
       publicPath: '/', // 会拼接在模块路径的前面。默认是空字符串，即相对路径
     },
@@ -111,7 +111,7 @@ module.exports = env => {
       // noParse: /jquery/,
       rules: [
         {
-          test: /\.js$/,
+          test: /\.(js|jsx)$/,
           use: 'babel-loader?cacheDirectory',
           exclude: /node_modules/
         },
@@ -190,7 +190,7 @@ module.exports = env => {
       new MiniCssExtractPlugin({
         // 为css指定文件夹
         filename: 'css/[name].[contenthash:8].css', // name是chunk的名字
-        // chunkFilename: '[id].css', // 在异步加载时使用id
+        // chunkFilename: 'css/[id].css', // 在异步加载时使用id
       }),
       // 不止扫描css文件，还扫描js文件，对于类名出现过的，则不清理，即使类名和变量名同名了，也不清理
       // 为了安全
