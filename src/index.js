@@ -1,6 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
-import _ from 'lodash';
 
-console.log('index');
+console.log(1, module.hot);
+
+const App = require('./App').default;
+    console.log(App);
+    ReactDOM.render(<App />, document.getElementById('root'));
+
+if (module.hot) {
+  module.hot.accept(['./App'], () => {
+    const App = require('./App').default;
+    console.log(App);
+    ReactDOM.render(<App />, document.getElementById('root'));
+  })
+}

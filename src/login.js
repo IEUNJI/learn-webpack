@@ -1,8 +1,6 @@
-import React from 'react';
-import $ from 'jquery';
+import { func2 } from './funcs';
 
-console.log('login.js');
-
+console.log(func2());
 /**
  * @babel/cli babel 命令行工具
  * 

@@ -40,13 +40,14 @@ module.exports = env => {
       }
     },
     // stats: 'normal',
+    // 多入口并不会每个入口分别摇树优化，而是看作一个整体
     entry: {
       index: './src/index.js',
       // login: './src/login.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
-      filename: '[name].[contenthash:8].js', // hash指的是每次构建时产生的哈希值
+      filename: '[name].[hash:8].js', // hash指的是每次构建时产生的哈希值
       chunkFilename: '[name].[contenthash:8].js',
       publicPath: '/', // 会拼接在模块路径的前面。默认是空字符串，即相对路径
     },
@@ -73,6 +74,7 @@ module.exports = env => {
     // devtool: 'none', // 调试时看不到源代码
     // sourceMap文件对映规则，VLQ编码：http://www.ruanyifeng.com/blog/2013/01/javascript_source_map.html
     devServer: {
+      hot: true,
       port: 8080,
       compress: true, // gzip压缩等
       contentBase: path.resolve(__dirname, 'dist'), // 将dist目录作为服务目录
